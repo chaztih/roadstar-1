@@ -1,0 +1,5 @@
+{
+  "name": "今日路線 - 隨機探索平台",
+  "description": "根據您的 GPS 位置和設定距離，隨機生成今日的探索或運動路線。",
+  "requestFramePermissions": ["geolocation"]
+}
