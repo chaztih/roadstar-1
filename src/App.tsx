@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   MapPin, 
@@ -20,6 +21,12 @@ import {
   Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+
+declare global {
+  interface Window {
+    paypal: any;
+  }
+}
 
 // --- Types ---
 type Language = 'zh-TW' | 'en' | 'ja' | 'ko' | 'es' | 'fr';
@@ -272,6 +279,66 @@ export default function App() {
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const t = TRANSLATIONS[language];
+
+  const [isPaying, setIsPaying] = useState(false);
+
+  const handlePay = (amount: string) => {
+    if (!window.paypal) {
+      alert("PayPal 尚未載入，請稍後再試");
+      return;
+    }
+
+    setIsPaying(true);
+
+    // 清除舊的按鈕容器內容
+    const container = document.getElementById('paypal-button-container');
+    if (container) container.innerHTML = '';
+
+    window.paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color:  'blue',
+        shape:  'rect',
+        label:  'paypal'
+      },
+      createOrder: function (data: any, actions: any) {
+        return actions.order.create({
+          purchase_units: [
+            {
+              amount: {
+                value: amount,
+                currency_code: "TWD"
+              }
+            }
+          ]
+        });
+      },
+      onApprove: function (data: any, actions: any) {
+        return actions.order.capture().then(function () {
+          alert("感謝您的支持 ❤️");
+          setShowDonation(false);
+          setIsPaying(false);
+        });
+      },
+      onCancel: function() {
+        setIsPaying(false);
+      },
+      onError: function (err: any) {
+        console.error('PayPal Error:', err);
+        alert("支付過程中發生錯誤");
+        setIsPaying(false);
+      }
+    }).render('#paypal-button-container').then(() => {
+      // 嘗試自動觸發 PayPal 視窗
+      const paypalButton = document.querySelector('#paypal-button-container .paypal-button');
+      if (paypalButton instanceof HTMLElement) {
+        paypalButton.click();
+      }
+      // 如果自動觸發失敗，至少讓容器可見，讓使用者可以手動點擊
+      const container = document.getElementById('paypal-button-container');
+      if (container) container.classList.remove('hidden');
+    });
+  };
 
   // --- Geolocation ---
   const updateLocation = useCallback(() => {
@@ -581,15 +648,26 @@ export default function App() {
               
               <div className="p-8 space-y-6">
                 <div className="space-y-3">
-                  <button className="w-full bg-black text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-black/90 transition-all active:scale-95">
-                    <Coffee size={20} />
+                  <button 
+                    onClick={() => handlePay("50")}
+                    disabled={isPaying}
+                    className="w-full bg-black text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-black/90 transition-all active:scale-95 disabled:opacity-50"
+                  >
+                    {isPaying ? <RefreshCw size={20} className="animate-spin" /> : <Coffee size={20} />}
                     <span>{t.buyCoffee} (NT$ 50)</span>
                   </button>
-                  <button className="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all active:scale-95">
-                    <Gift size={20} />
+                  <button 
+                    onClick={() => handlePay("150")}
+                    disabled={isPaying}
+                    className="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all active:scale-95 disabled:opacity-50"
+                  >
+                    {isPaying ? <RefreshCw size={20} className="animate-spin" /> : <Gift size={20} />}
                     <span>{t.sponsorDev} (NT$ 150)</span>
                   </button>
                 </div>
+
+                {/* 隱藏的 PayPal 按鈕容器 */}
+                <div id="paypal-button-container" className="hidden"></div>
 
                 <div className="bg-black/5 p-4 rounded-2xl space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold opacity-40">
