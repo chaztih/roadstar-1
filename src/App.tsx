@@ -17,8 +17,7 @@ import {
   Coffee,
   Gift,
   Languages,
-  Check,
-  MessageCircle
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -38,7 +37,6 @@ interface Translation {
   estDistance: string;
   estTime: string;
   startNavigation: string;
-  customerService: string;
   footerText: string;
   km: string;
   min: string;
@@ -63,7 +61,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '預計距離',
     estTime: '預計耗時',
     startNavigation: '開始導航',
-    customerService: '客服 LINE',
     footerText: '探索未知 • 享受當下 • 保持健康',
     km: '公里',
     min: '分鐘',
@@ -86,7 +83,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Est. Distance',
     estTime: 'Est. Time',
     startNavigation: 'Start Navigation',
-    customerService: 'Support LINE',
     footerText: 'Explore the Unknown • Enjoy the Moment • Stay Healthy',
     km: 'KM',
     min: 'MIN',
@@ -109,7 +105,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '予定距離',
     estTime: '予定時間',
     startNavigation: 'ナビを開始',
-    customerService: 'サポート LINE',
     footerText: '未知を探索 • 今を楽しむ • 健康を維持',
     km: 'km',
     min: '分',
@@ -132,7 +127,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '예상 거리',
     estTime: '예상 시간',
     startNavigation: '길찾기 시작',
-    customerService: '고객센터 LINE',
     footerText: '미지를 탐험 • 현재를 즐김 • 건강 유지',
     km: 'km',
     min: '분',
@@ -155,7 +149,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distancia Est.',
     estTime: 'Tiempo Est.',
     startNavigation: 'Iniciar Navegación',
-    customerService: 'Soporte LINE',
     footerText: 'Explora lo Desconocido • Disfruta el Momento • Mantente Sano',
     km: 'km',
     min: 'min',
@@ -178,7 +171,6 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distance Est.',
     estTime: 'Temps Est.',
     startNavigation: 'Démarrer Navigation',
-    customerService: 'Support LINE',
     footerText: 'Explorer l\'Inconnu • Profiter du Moment • Rester en Bonne Santé',
     km: 'km',
     min: 'min',
@@ -350,15 +342,8 @@ export default function App() {
               )}
             </AnimatePresence>
           </div>
-          <a 
-            href="https://line.me/R/ti/p/@your_line_id" 
-            target="_blank" 
-            rel="noreferrer"
-            className="p-2 hover:bg-black/5 rounded-full transition-colors relative group flex items-center gap-2"
-          >
-            <MessageCircle size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-bold text-emerald-600 hidden sm:inline">{t.customerService}</span>
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          <a href="https://lin.ee/1eYiNru" target="_blank" rel="noreferrer" className="flex items-center">
+            <img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" className="h-9 w-auto" />
           </a>
         </div>
       </header>
