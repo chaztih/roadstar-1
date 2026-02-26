@@ -17,7 +17,8 @@ import {
   Coffee,
   Gift,
   Languages,
-  Check
+  Check,
+  LayoutGrid
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -37,6 +38,11 @@ interface Translation {
   estDistance: string;
   estTime: string;
   startNavigation: string;
+  viewOtherApps: string;
+  qrModalTitle: string;
+  qrModalDesc: string;
+  openInLine: string;
+  close: string;
   footerText: string;
   km: string;
   min: string;
@@ -61,6 +67,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '預計距離',
     estTime: '預計耗時',
     startNavigation: '開始導航',
+    viewOtherApps: '觀看其他 App',
+    qrModalTitle: '關注我們的 LINE',
+    qrModalDesc: '掃描 QR Code 或點擊下方按鈕，關注我們的官方帳號以獲取更多 App 資訊！',
+    openInLine: '直接開啟 LINE',
+    close: '關閉',
     footerText: '探索未知 • 享受當下 • 保持健康',
     km: '公里',
     min: '分鐘',
@@ -83,6 +94,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Est. Distance',
     estTime: 'Est. Time',
     startNavigation: 'Start Navigation',
+    viewOtherApps: 'More Apps',
+    qrModalTitle: 'Follow our LINE',
+    qrModalDesc: 'Scan the QR Code or click the button below to follow our official account for more apps!',
+    openInLine: 'Open in LINE',
+    close: 'Close',
     footerText: 'Explore the Unknown • Enjoy the Moment • Stay Healthy',
     km: 'KM',
     min: 'MIN',
@@ -105,6 +121,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '予定距離',
     estTime: '予定時間',
     startNavigation: 'ナビを開始',
+    viewOtherApps: '他のアプリ',
+    qrModalTitle: 'LINEでフォロー',
+    qrModalDesc: 'QRコードをスキャンするか、下のボタンをクリックして公式アカウントをフォローしてください！',
+    openInLine: 'LINEで開く',
+    close: '閉じる',
     footerText: '未知を探索 • 今を楽しむ • 健康を維持',
     km: 'km',
     min: '分',
@@ -127,6 +148,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '예상 거리',
     estTime: '예상 시간',
     startNavigation: '길찾기 시작',
+    viewOtherApps: '다른 앱 보기',
+    qrModalTitle: 'LINE 팔로우',
+    qrModalDesc: 'QR 코드를 스캔하거나 아래 버튼을 클릭하여 공식 계정을 팔로우하고 더 많은 앱 정보를 확인하세요!',
+    openInLine: 'LINE에서 열기',
+    close: '닫기',
     footerText: '미지를 탐험 • 현재를 즐김 • 건강 유지',
     km: 'km',
     min: '분',
@@ -149,6 +175,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distancia Est.',
     estTime: 'Tiempo Est.',
     startNavigation: 'Iniciar Navegación',
+    viewOtherApps: 'Más Apps',
+    qrModalTitle: 'Síguenos en LINE',
+    qrModalDesc: '¡Escanea el código QR o haz clic en el botón de abajo para seguir nuestra cuenta oficial!',
+    openInLine: 'Abrir en LINE',
+    close: 'Cerrar',
     footerText: 'Explora lo Desconocido • Disfruta el Momento • Mantente Sano',
     km: 'km',
     min: 'min',
@@ -171,6 +202,11 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distance Est.',
     estTime: 'Temps Est.',
     startNavigation: 'Démarrer Navigation',
+    viewOtherApps: 'Plus d\'Apps',
+    qrModalTitle: 'Suivez-nous sur LINE',
+    qrModalDesc: 'Scannez le code QR ou cliquez sur le bouton ci-dessous pour suivre notre compte officiel !',
+    openInLine: 'Ouvrir dans LINE',
+    close: 'Fermer',
     footerText: 'Explorer l\'Inconnu • Profiter du Moment • Rester en Bonne Santé',
     km: 'km',
     min: 'min',
@@ -218,6 +254,7 @@ export default function App() {
   const [distance, setDistance] = useState<number>(3); // Default 3km
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedRoute, setGeneratedRoute] = useState<Route | null>(null);
+  const [showQR, setShowQR] = useState(false);
   const [language, setLanguage] = useState<Language>('zh-TW');
   const [showLangMenu, setShowLangMenu] = useState(false);
 
@@ -342,9 +379,13 @@ export default function App() {
               )}
             </AnimatePresence>
           </div>
-          <a href="https://lin.ee/1eYiNru" target="_blank" rel="noreferrer" className="flex items-center">
-            <img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="更多APP" height="36" className="h-9 w-auto" />
-          </a>
+          <button 
+            onClick={() => setShowQR(true)}
+            className="p-2 hover:bg-black/5 rounded-full transition-colors relative group flex items-center gap-2"
+          >
+            <LayoutGrid size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-bold text-emerald-600 hidden sm:inline">{t.viewOtherApps}</span>
+          </button>
         </div>
       </header>
 
@@ -499,6 +540,61 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* QR Code Modal */}
+      <AnimatePresence>
+        {showQR && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowQR(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl p-8 text-center space-y-6"
+            >
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-[#1A1A1A]">{t.qrModalTitle}</h3>
+                <p className="text-sm text-black/60 leading-relaxed">
+                  {t.qrModalDesc}
+                </p>
+              </div>
+
+              <div className="bg-emerald-50 p-4 rounded-3xl inline-block">
+                <img 
+                  src="https://qr-official.line.me/gs/M_482lnurl_BW.png?oat_content=qr" 
+                  alt="LINE QR Code"
+                  className="w-48 h-48 mx-auto rounded-xl shadow-inner"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <a 
+                  href="https://line.me/R/ti/p/@482lnurl" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="w-full bg-[#06C755] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#05b34d] transition-all active:scale-95 shadow-lg shadow-emerald-100"
+                >
+                  <LayoutGrid size={20} />
+                  <span>{t.openInLine}</span>
+                </a>
+                <button 
+                  onClick={() => setShowQR(false)}
+                  className="w-full py-2 text-sm font-bold opacity-30 hover:opacity-100 transition-opacity"
+                >
+                  {t.close}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Footer Info */}
       <footer className="max-w-md mx-auto p-8 text-center space-y-4">
