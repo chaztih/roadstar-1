@@ -300,7 +300,12 @@ export default function App() {
     <div className="min-h-screen bg-[#F5F5F5] text-[#1A1A1A] font-sans selection:bg-emerald-100">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-black/5 px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2">
+        <a 
+          href="https://docs.google.com/document/d/14jfPT9G47N561mEPo_b84Ps1gT7hePzl9Tez-CWRXLU/edit?tab=t.0"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
           <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
             <Navigation size={24} />
           </div>
@@ -308,7 +313,7 @@ export default function App() {
             <h1 className="font-bold text-lg leading-tight">{t.title}</h1>
             <p className="text-[10px] uppercase tracking-wider text-black/40 font-semibold">{t.subtitle}</p>
           </div>
-        </div>
+        </a>
         <div className="flex items-center gap-2">
           <div className="relative">
             <button 
