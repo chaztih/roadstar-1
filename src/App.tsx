@@ -343,7 +343,7 @@ export default function App() {
             </AnimatePresence>
           </div>
           <a href="https://lin.ee/1eYiNru" target="_blank" rel="noreferrer" className="flex items-center">
-            <img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" className="h-9 w-auto" />
+            <img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="更多APP" height="36" className="h-9 w-auto" />
           </a>
         </div>
       </header>
