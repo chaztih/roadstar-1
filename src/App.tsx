@@ -226,6 +226,7 @@ export default function App() {
   const [distance, setDistance] = useState<number>(3); // Default 3km
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedRoute, setGeneratedRoute] = useState<Route | null>(null);
+  const [showAppsModal, setShowAppsModal] = useState(false);
   const [language, setLanguage] = useState<Language>('zh-TW');
   const [showLangMenu, setShowLangMenu] = useState(false);
 
@@ -350,13 +351,13 @@ export default function App() {
               )}
             </AnimatePresence>
           </div>
-          <a 
-            href="#" 
+          <button 
+            onClick={() => setShowAppsModal(true)}
             className="p-2 hover:bg-black/5 rounded-full transition-colors relative group flex items-center gap-2"
           >
             <LayoutGrid size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-bold text-emerald-600 hidden sm:inline">{t.viewOtherApps}</span>
-          </a>
+          </button>
         </div>
       </header>
 
@@ -511,6 +512,53 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Apps Modal */}
+      <AnimatePresence>
+        {showAppsModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAppsModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative bg-white w-full max-w-xs rounded-[2.5rem] overflow-hidden shadow-2xl p-8 text-center space-y-6"
+            >
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-[#1A1A1A]">{t.viewOtherApps}</h3>
+                <div className="w-12 h-1 bg-emerald-500 mx-auto rounded-full"></div>
+              </div>
+
+              <div className="bg-emerald-50 p-4 rounded-3xl border-2 border-emerald-100">
+                <img 
+                  src="https://qr-official.line.me/gs/M_482lnurl_BW.png?oat_content=qr" 
+                  alt="LINE QR Code"
+                  className="w-full aspect-square object-contain rounded-xl"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              <p className="text-sm font-medium opacity-60 leading-relaxed">
+                {language === 'zh-TW' ? '掃描上方 QR Code' : 'Scan the QR Code'} <br />
+                {language === 'zh-TW' ? '探索更多實用工具' : 'to explore more tools'}
+              </p>
+
+              <button 
+                onClick={() => setShowAppsModal(false)}
+                className="w-full py-4 bg-black text-white rounded-2xl font-bold hover:bg-black/90 transition-all active:scale-95"
+              >
+                {language === 'zh-TW' ? '關閉' : 'Close'}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Footer Info */}
       <footer className="max-w-md mx-auto p-8 text-center space-y-4">
