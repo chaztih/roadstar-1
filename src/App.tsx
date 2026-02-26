@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   MapPin, 
@@ -18,15 +17,10 @@ import {
   Coffee,
   Gift,
   Languages,
-  Check
+  Check,
+  MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-
-declare global {
-  interface Window {
-    paypal: any;
-  }
-}
 
 // --- Types ---
 type Language = 'zh-TW' | 'en' | 'ja' | 'ko' | 'es' | 'fr';
@@ -44,13 +38,7 @@ interface Translation {
   estDistance: string;
   estTime: string;
   startNavigation: string;
-  supportUs: string;
-  supportDesc: string;
-  buyCoffee: string;
-  sponsorDev: string;
-  aboutDonation: string;
-  donationDisclaimer: string;
-  later: string;
+  customerService: string;
   footerText: string;
   km: string;
   min: string;
@@ -75,13 +63,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '預計距離',
     estTime: '預計耗時',
     startNavigation: '開始導航',
-    supportUs: '支持我們',
-    supportDesc: '您的支持是我們持續開發的動力',
-    buyCoffee: '請我喝杯咖啡',
-    sponsorDev: '贊助開發計畫',
-    aboutDonation: '關於 Google Play 捐贈',
-    donationDisclaimer: '由於這是網頁應用程式，我們目前透過模擬按鈕展示功能。在正式版本中，這將連結至 Google Play 結帳系統或第三方支付平台。',
-    later: '稍後再說',
+    customerService: '客服 LINE',
     footerText: '探索未知 • 享受當下 • 保持健康',
     km: '公里',
     min: '分鐘',
@@ -104,13 +86,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Est. Distance',
     estTime: 'Est. Time',
     startNavigation: 'Start Navigation',
-    supportUs: 'Support Us',
-    supportDesc: 'Your support keeps us going',
-    buyCoffee: 'Buy me a coffee',
-    sponsorDev: 'Sponsor Development',
-    aboutDonation: 'About Google Play Donation',
-    donationDisclaimer: 'As this is a web app, we use simulated buttons. In production, this would link to Google Play billing or third-party payments.',
-    later: 'Maybe later',
+    customerService: 'Support LINE',
     footerText: 'Explore the Unknown • Enjoy the Moment • Stay Healthy',
     km: 'KM',
     min: 'MIN',
@@ -133,13 +109,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '予定距離',
     estTime: '予定時間',
     startNavigation: 'ナビを開始',
-    supportUs: 'サポートする',
-    supportDesc: '皆様のサポートが開発の励みになります',
-    buyCoffee: 'コーヒーを奢る',
-    sponsorDev: '開発を支援する',
-    aboutDonation: 'Google Play 寄付について',
-    donationDisclaimer: 'これはウェブアプリであるため、現在はシミュレーションボタンを表示しています。正式版では Google Play 決済に接続されます。',
-    later: '後で',
+    customerService: 'サポート LINE',
     footerText: '未知を探索 • 今を楽しむ • 健康を維持',
     km: 'km',
     min: '分',
@@ -162,13 +132,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '예상 거리',
     estTime: '예상 시간',
     startNavigation: '길찾기 시작',
-    supportUs: '후원하기',
-    supportDesc: '여러분의 후원이 개발의 원동력이 됩니다',
-    buyCoffee: '커피 한 잔 사주기',
-    sponsorDev: '개발 프로젝트 후원',
-    aboutDonation: 'Google Play 기부 안내',
-    donationDisclaimer: '이것은 웹 앱이므로 현재 시뮬레이션 버튼을 사용합니다. 정식 버전에서는 Google Play 결제 시스템으로 연결됩니다.',
-    later: '나중에',
+    customerService: '고객센터 LINE',
     footerText: '미지를 탐험 • 현재를 즐김 • 건강 유지',
     km: 'km',
     min: '분',
@@ -191,13 +155,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distancia Est.',
     estTime: 'Tiempo Est.',
     startNavigation: 'Iniciar Navegación',
-    supportUs: 'Apóyanos',
-    supportDesc: 'Tu apoyo nos motiva a seguir',
-    buyCoffee: 'Invítame a un café',
-    sponsorDev: 'Patrocinar Desarrollo',
-    aboutDonation: 'Sobre Donaciones Google Play',
-    donationDisclaimer: 'Como es una web app, usamos botones simulados. En producción, esto conectaría con Google Play o pagos de terceros.',
-    later: 'Más tarde',
+    customerService: 'Soporte LINE',
     footerText: 'Explora lo Desconocido • Disfruta el Momento • Mantente Sano',
     km: 'km',
     min: 'min',
@@ -220,13 +178,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distance Est.',
     estTime: 'Temps Est.',
     startNavigation: 'Démarrer Navigation',
-    supportUs: 'Soutenez-nous',
-    supportDesc: 'Votre soutien nous motive',
-    buyCoffee: 'Offrez-moi un café',
-    sponsorDev: 'Parrainer le Développement',
-    aboutDonation: 'À propos des dons Google Play',
-    donationDisclaimer: 'Ceci étant une web app, nous utilisons des boutons simulés. En production, cela lierait au système Google Play.',
-    later: 'Plus tard',
+    customerService: 'Support LINE',
     footerText: 'Explorer l\'Inconnu • Profiter du Moment • Rester en Bonne Santé',
     km: 'km',
     min: 'min',
@@ -274,71 +226,10 @@ export default function App() {
   const [distance, setDistance] = useState<number>(3); // Default 3km
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedRoute, setGeneratedRoute] = useState<Route | null>(null);
-  const [showDonation, setShowDonation] = useState(false);
   const [language, setLanguage] = useState<Language>('zh-TW');
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const t = TRANSLATIONS[language];
-
-  const [isPaying, setIsPaying] = useState(false);
-
-  const handlePay = (amount: string) => {
-    if (!window.paypal) {
-      alert("PayPal 尚未載入，請稍後再試");
-      return;
-    }
-
-    setIsPaying(true);
-
-    // 清除舊的按鈕容器內容
-    const container = document.getElementById('paypal-button-container');
-    if (container) container.innerHTML = '';
-
-    window.paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color:  'blue',
-        shape:  'rect',
-        label:  'paypal'
-      },
-      createOrder: function (data: any, actions: any) {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: {
-                value: amount,
-                currency_code: "TWD"
-              }
-            }
-          ]
-        });
-      },
-      onApprove: function (data: any, actions: any) {
-        return actions.order.capture().then(function () {
-          alert("感謝您的支持 ❤️");
-          setShowDonation(false);
-          setIsPaying(false);
-        });
-      },
-      onCancel: function() {
-        setIsPaying(false);
-      },
-      onError: function (err: any) {
-        console.error('PayPal Error:', err);
-        alert("支付過程中發生錯誤");
-        setIsPaying(false);
-      }
-    }).render('#paypal-button-container').then(() => {
-      // 嘗試自動觸發 PayPal 視窗
-      const paypalButton = document.querySelector('#paypal-button-container .paypal-button');
-      if (paypalButton instanceof HTMLElement) {
-        paypalButton.click();
-      }
-      // 如果自動觸發失敗，至少讓容器可見，讓使用者可以手動點擊
-      const container = document.getElementById('paypal-button-container');
-      if (container) container.classList.remove('hidden');
-    });
-  };
 
   // --- Geolocation ---
   const updateLocation = useCallback(() => {
@@ -459,13 +350,16 @@ export default function App() {
               )}
             </AnimatePresence>
           </div>
-          <button 
-            onClick={() => setShowDonation(true)}
-            className="p-2 hover:bg-black/5 rounded-full transition-colors relative group"
+          <a 
+            href="https://line.me/R/ti/p/@your_line_id" 
+            target="_blank" 
+            rel="noreferrer"
+            className="p-2 hover:bg-black/5 rounded-full transition-colors relative group flex items-center gap-2"
           >
-            <Heart size={20} className="text-rose-500 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full animate-pulse"></span>
-          </button>
+            <MessageCircle size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-bold text-emerald-600 hidden sm:inline">{t.customerService}</span>
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          </a>
         </div>
       </header>
 
@@ -521,16 +415,16 @@ export default function App() {
               <input 
                 type="range" 
                 min="1" 
-                max="15" 
-                step="0.5"
+                max="100" 
+                step="1"
                 value={distance}
                 onChange={(e) => setDistance(parseFloat(e.target.value))}
                 className="w-full h-2 bg-black/5 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-[10px] font-bold opacity-30 px-1">
                 <span>1 {t.km}</span>
-                <span>8 {t.km}</span>
-                <span>15 {t.km}</span>
+                <span>50 {t.km}</span>
+                <span>100 {t.km}</span>
               </div>
             </div>
 
@@ -620,76 +514,6 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
-
-      {/* Donation Modal */}
-      <AnimatePresence>
-        {showDonation && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowDonation(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              className="relative bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl"
-            >
-              <div className="bg-rose-500 p-8 text-white text-center space-y-2">
-                <div className="w-16 h-16 bg-white/20 rounded-2xl mx-auto flex items-center justify-center mb-2">
-                  <Heart size={32} fill="currentColor" />
-                </div>
-                <h3 className="text-2xl font-black">{t.supportUs}</h3>
-                <p className="text-rose-100 text-sm">{t.supportDesc}</p>
-              </div>
-              
-              <div className="p-8 space-y-6">
-                <div className="space-y-3">
-                  <button 
-                    onClick={() => handlePay("50")}
-                    disabled={isPaying}
-                    className="w-full bg-black text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-black/90 transition-all active:scale-95 disabled:opacity-50"
-                  >
-                    {isPaying ? <RefreshCw size={20} className="animate-spin" /> : <Coffee size={20} />}
-                    <span>{t.buyCoffee} (NT$ 50)</span>
-                  </button>
-                  <button 
-                    onClick={() => handlePay("150")}
-                    disabled={isPaying}
-                    className="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all active:scale-95 disabled:opacity-50"
-                  >
-                    {isPaying ? <RefreshCw size={20} className="animate-spin" /> : <Gift size={20} />}
-                    <span>{t.sponsorDev} (NT$ 150)</span>
-                  </button>
-                </div>
-
-                {/* 隱藏的 PayPal 按鈕容器 */}
-                <div id="paypal-button-container" className="hidden"></div>
-
-                <div className="bg-black/5 p-4 rounded-2xl space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold opacity-40">
-                    <Info size={14} />
-                    <span>{t.aboutDonation}</span>
-                  </div>
-                  <p className="text-[11px] leading-relaxed opacity-60">
-                    {t.donationDisclaimer}
-                  </p>
-                </div>
-
-                <button 
-                  onClick={() => setShowDonation(false)}
-                  className="w-full py-2 text-sm font-bold opacity-30 hover:opacity-100 transition-opacity"
-                >
-                  {t.later}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Footer Info */}
       <footer className="max-w-md mx-auto p-8 text-center space-y-4">
