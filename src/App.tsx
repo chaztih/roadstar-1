@@ -18,7 +18,7 @@ import {
   Gift,
   Languages,
   Check,
-  QrCode
+  Youtube
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -38,7 +38,7 @@ interface Translation {
   estDistance: string;
   estTime: string;
   startNavigation: string;
-  viewOtherApps: string;
+  watchTutorial: string;
   footerText: string;
   km: string;
   min: string;
@@ -63,7 +63,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '預計距離',
     estTime: '預計耗時',
     startNavigation: '開始導航',
-    viewOtherApps: '觀看其他 App',
+    watchTutorial: '觀看操作影片',
     footerText: '探索未知 • 享受當下 • 保持健康',
     km: '公里',
     min: '分鐘',
@@ -86,7 +86,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Est. Distance',
     estTime: 'Est. Time',
     startNavigation: 'Start Navigation',
-    viewOtherApps: 'More Apps',
+    watchTutorial: 'Watch Tutorial',
     footerText: 'Explore the Unknown • Enjoy the Moment • Stay Healthy',
     km: 'KM',
     min: 'MIN',
@@ -109,7 +109,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '予定距離',
     estTime: '予定時間',
     startNavigation: 'ナビを開始',
-    viewOtherApps: '他のアプリ',
+    watchTutorial: '操作動画を見る',
     footerText: '未知を探索 • 今を楽しむ • 健康を維持',
     km: 'km',
     min: '分',
@@ -132,7 +132,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: '예상 거리',
     estTime: '예상 시간',
     startNavigation: '길찾기 시작',
-    viewOtherApps: '다른 앱 보기',
+    watchTutorial: '조작 영상 보기',
     footerText: '미지를 탐험 • 현재를 즐김 • 건강 유지',
     km: 'km',
     min: '분',
@@ -155,7 +155,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distancia Est.',
     estTime: 'Tiempo Est.',
     startNavigation: 'Iniciar Navegación',
-    viewOtherApps: 'Más Apps',
+    watchTutorial: 'Ver Tutorial',
     footerText: 'Explora lo Desconocido • Disfruta el Momento • Mantente Sano',
     km: 'km',
     min: 'min',
@@ -178,7 +178,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
     estDistance: 'Distance Est.',
     estTime: 'Temps Est.',
     startNavigation: 'Démarrer Navigation',
-    viewOtherApps: 'Plus d\'Apps',
+    watchTutorial: 'Voir le Tutoriel',
     footerText: 'Explorer l\'Inconnu • Profiter du Moment • Rester en Bonne Santé',
     km: 'km',
     min: 'min',
@@ -351,13 +351,13 @@ export default function App() {
             </AnimatePresence>
           </div>
           <a 
-            href="https://docs.google.com/document/d/1mgGQjajQR1qXehroCi6H_y6l7nF_GmJAoqfz5uUnGsI/edit?usp=sharing" 
+            href="https://www.youtube.com/shorts/aB9EwmEUhc0" 
             target="_blank"
             rel="noreferrer"
             className="p-2 hover:bg-black/5 rounded-full transition-colors relative group flex items-center gap-2"
           >
-            <QrCode size={20} className="text-emerald-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-bold text-emerald-600 hidden sm:inline">{t.viewOtherApps}</span>
+            <Youtube size={20} className="text-red-500 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-bold text-red-600 hidden sm:inline">{t.watchTutorial}</span>
           </a>
         </div>
       </header>
